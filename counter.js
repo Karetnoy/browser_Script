@@ -72,3 +72,31 @@
         window.alert('Вы смотрите этот канал уже: ' + 'время разницы')
     });
 })();
+
+
+// Это референс. но полагаю, так лучше не делать.
+
+// // Получаем элементы
+// const videoPlayer = document.getElementById('videoPlayer');
+// const checkTimeButton = document.getElementById('checkTimeButton');
+
+// let videoStartTime = 0;
+
+// // Обработчик события, вызывается при загрузке нового видео
+// videoPlayer.addEventListener('loadedmetadata', function() {
+//   videoStartTime = videoPlayer.currentTime;
+// });
+
+// // Обработчик события, вызывается при переходе на другую ссылку
+// window.addEventListener('beforeunload', function(event) {
+//   const videoEndTime = videoPlayer.currentTime;
+//   const videoDuration = videoEndTime - videoStartTime;
+//   event.returnValue = `Вы просмотрели видео ${videoDuration} секунд.`;
+// });
+
+// // Обработчик события для кнопки "Проверить время"
+// checkTimeButton.addEventListener('click', function() {
+//   const currentTime = videoPlayer.currentTime;
+//   const videoDuration = currentTime - videoStartTime;
+//   alert(`Прошло ${videoDuration} секунд.`);
+// });
