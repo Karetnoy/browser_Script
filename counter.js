@@ -13,6 +13,7 @@
     'use strict';
 
 
+
     let div = document.createElement('div');
     div.className = '';
     div.style.color = "#fff";
@@ -21,33 +22,19 @@
     div.innerHTML = 'Open channel name';
     div.id = 'ololo112';
 
-    let timerId = setInterval(() => {
-        if (document.querySelector("#logo > a")) {
-            stopTimer();
-        }
-    }, 700);
 
-    let firstURL = window.location.href(); //задаем первичный URL при входе в видео
+
+    let firstURL = window.location.href; //задаем первичный URL при входе в видео
+    let isVideo = window.location.pathname == '/watch'
+    let oldLocation = location.href;
     let startTimeWatch = new Date(); //засекли время открытия канала
-
-    function stopTimer() {
-        clearInterval(timerId);
-        document.querySelector("#logo > a").after(div);
-
-
-    }
 
     function getNameChannel() {
         return document.querySelector("#text > a").innerHTML
     }
 
 
-
-
-
-
-
-//с комментариями то, что я написал сегодня, но что-то не догоняю последовательность
+    //с комментариями то, что я написал сегодня, но что-то не догоняю последовательность
 
 
     let timerCoparsion = setInterval(() => {
@@ -61,42 +48,82 @@
 
     function stopTimerCoparsion() {
         clearInterval(timerCoparsion)
-        localStorage.setItem(getNameChannel(), result); //тут мы вносим в localStorage имя канал и время когда открыт
-        
+            ; //тут мы вносим в localStorage имя канал и время когда открыт
+    }
+
+    div.addEventListener('click', () => {
+        console.log("Название канала - ", getNameChannel())
+
+    });
+
+
+    if (isVideo) {
+        const player = document.querySelector("video")
+        let startDate = false
+
+        setInterval(() => {
+            if (player.playing) {
+                if (!startDate) { startDate = new Date() }
+
+            } else {
+                if (startDate) {
+                    let difference = new Date() - startDate
+
+                    let channels = JSON.parse(localStorage.getItem('channels')) //получаем из ЛС массив каналов со временм просмотра
+                    let index = channels.findIndex((channel) => channel.name === getNameChannel()) //находим объект канала в масси по индексу
+
+                    if (index !== -1) { // проверяем есть ли канал в массиве
+                        channels[index].time += difference //добавляем просмотренное время, если канал уже есть
+                    } else {
+                        channels.push({ name: getNameChannel(), time: difference }) // создаем новые канал
+                    }
+                    localStorage.setItem('channels', JSON.stringify(channels)) // записывает изменения в ЛС
+                }
+                startDate = false
+            }
+        }, 500)
+
+
     }
 
 
 
-    div.addEventListener('click', () => {
-        console.log("Название канала - ", getNameChannel())
-        window.alert('Вы смотрите этот канал уже: ' + 'время разницы')
-    });
+    function startChekURL() {
+        setInterval(function () {
+            if (location.href != oldLocation) {
+                isVideo = window.location.pathname == '/watch'
+                oldLocation = location.href
+            }
+        }, 500);
+    }
+
+
+    startChekURL()
+
+    let timerId = setInterval(() => {
+        if (document.querySelector("#logo > a")) {
+            stopTimer();
+        }
+    }, 700);
+
+    function stopTimer() {
+        clearInterval(timerId);
+        document.querySelector("#logo > a").after(div);
+    }
+
+    if (!localStorage.getItem('channels')) {
+        localStorage.setItem('channels', JSON.stringify([]))
+    }
+
 })();
 
 
-// Это референс. но полагаю, так лучше не делать.
+//добавляем на все объекты js ынцтри window прототип свойство
+//которое возвращает зачение запущенно ли видео    
+Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
+    get: function () {
+        return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+    }
+})
 
-// // Получаем элементы
-// const videoPlayer = document.getElementById('videoPlayer');
-// const checkTimeButton = document.getElementById('checkTimeButton');
 
-// let videoStartTime = 0;
-
-// // Обработчик события, вызывается при загрузке нового видео
-// videoPlayer.addEventListener('loadedmetadata', function() {
-//   videoStartTime = videoPlayer.currentTime;
-// });
-
-// // Обработчик события, вызывается при переходе на другую ссылку
-// window.addEventListener('beforeunload', function(event) {
-//   const videoEndTime = videoPlayer.currentTime;
-//   const videoDuration = videoEndTime - videoStartTime;
-//   event.returnValue = `Вы просмотрели видео ${videoDuration} секунд.`;
-// });
-
-// // Обработчик события для кнопки "Проверить время"
-// checkTimeButton.addEventListener('click', function() {
-//   const currentTime = videoPlayer.currentTime;
-//   const videoDuration = currentTime - videoStartTime;
-//   alert(`Прошло ${videoDuration} секунд.`);
-// });
