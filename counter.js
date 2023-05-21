@@ -17,9 +17,15 @@
     let div = document.createElement('div');
     div.className = '';
     div.style.color = "#fff";
-    div.style.background = "red";
-    div.style.width = "100px";
-    div.innerHTML = 'Open channel name';
+    div.style.background = "gray";
+    div.style.borderRadius = "7px";
+    div.style.border = "3px white solid";
+    div.style.width = "60px";
+    div.style.height = "30px";
+    div.style.textAlign = 'center';
+    div.style.padding = 'auto';
+    div.style.marginTop = '10px';
+    div.innerHTML = 'Watch counter';
     div.id = 'ololo112';
 
 
@@ -52,6 +58,9 @@
     }
 
     div.addEventListener('click', () => {
+        let channels = JSON.parse(localStorage.getItem('channels')) //получаем из ЛС массив каналов со временм просмотра
+        let index = channels.findIndex((channel) => channel.name === getNameChannel());
+        window.alert(`Вы смотрели "${channels[index].name}" за все время ${channels[index].time} мс`); //выводим сколько времени просматривали всего
         console.log("Название канала - ", getNameChannel())
 
     });
@@ -88,7 +97,7 @@
 
 
 
-    function startChekURL() {
+    function startCheckURL() {
         setInterval(function () {
             if (location.href != oldLocation) {
                 isVideo = window.location.pathname == '/watch'
@@ -98,7 +107,7 @@
     }
 
 
-    startChekURL()
+    startCheckURL()
 
     let timerId = setInterval(() => {
         if (document.querySelector("#logo > a")) {
@@ -115,11 +124,17 @@
         localStorage.setItem('channels', JSON.stringify([]))
     }
 
+
+
+
+
+
+
 })();
 
 
 //добавляем на все объекты js внутри window прототип свойство
-//которое возвращает зачение запущенно ли видео    
+//которое возвращает зачение запущенно ли видео
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     get: function () {
         return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
