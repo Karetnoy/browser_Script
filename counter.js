@@ -118,7 +118,7 @@
 })();
 
 
-//добавляем на все объекты js ынцтри window прототип свойство
+//добавляем на все объекты js внутри window прототип свойство
 //которое возвращает зачение запущенно ли видео    
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     get: function () {
@@ -126,4 +126,4 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     }
 })
 
-
+// добавить еще фичи
