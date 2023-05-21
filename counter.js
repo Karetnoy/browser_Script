@@ -60,7 +60,8 @@
     div.addEventListener('click', () => {
         let channels = JSON.parse(localStorage.getItem('channels')) //получаем из ЛС массив каналов со временм просмотра
         let index = channels.findIndex((channel) => channel.name === getNameChannel());
-        window.alert(`Вы смотрели "${channels[index].name}" за все время ${channels[index].time} мс`); //выводим сколько времени просматривали всего
+        let timeWatchMinute = channels[index].time / 60000; 
+        window.alert(`Вы смотрели "${channels[index].name}" всего ${timeWatchMinute.toFixed(2)} минут`); //выводим сколько времени просматривали всего
         console.log("Название канала - ", getNameChannel())
 
     });
